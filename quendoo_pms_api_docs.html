@@ -1,0 +1,1123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quendoo PMS API v1 - Documentation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1e40af;
+            --secondary: #8b5cf6;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --dark: #1e293b;
+            --gray-50: #f8fafc;
+            --gray-100: #f1f5f9;
+            --gray-200: #e2e8f0;
+            --gray-300: #cbd5e1;
+            --gray-700: #334155;
+            --gray-800: #1e293b;
+            --gray-900: #0f172a;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            line-height: 1.6;
+            color: var(--gray-800);
+            background: var(--gray-50);
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 3rem 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .header .subtitle {
+            font-size: 1.125rem;
+            opacity: 0.95;
+            font-weight: 400;
+        }
+
+        .version-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            margin-top: 1rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 2rem;
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .sidebar {
+            position: sticky;
+            top: 2rem;
+            height: fit-content;
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .sidebar h3 {
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--gray-700);
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .nav-link {
+            display: block;
+            padding: 0.5rem 0.75rem;
+            color: var(--gray-700);
+            text-decoration: none;
+            border-radius: 6px;
+            margin-bottom: 0.25rem;
+            font-size: 0.9375rem;
+            transition: all 0.2s;
+        }
+
+        .nav-link:hover {
+            background: var(--gray-100);
+            color: var(--primary);
+        }
+
+        .nav-link.active {
+            background: var(--primary);
+            color: white;
+            font-weight: 500;
+        }
+
+        .content {
+            background: white;
+            border-radius: 12px;
+            padding: 2.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .section {
+            margin-bottom: 4rem;
+            scroll-margin-top: 2rem;
+        }
+
+        .section h2 {
+            font-size: 1.875rem;
+            color: var(--gray-900);
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid var(--gray-200);
+        }
+
+        .section h3 {
+            font-size: 1.5rem;
+            color: var(--gray-900);
+            margin: 2rem 0 1rem;
+        }
+
+        .section h4 {
+            font-size: 1.125rem;
+            color: var(--gray-800);
+            margin: 1.5rem 0 0.75rem;
+            font-weight: 600;
+        }
+
+        .info-box {
+            background: var(--gray-50);
+            border-left: 4px solid var(--primary);
+            padding: 1rem 1.25rem;
+            margin: 1.5rem 0;
+            border-radius: 6px;
+        }
+
+        .info-box.warning {
+            border-left-color: var(--warning);
+            background: #fef3c7;
+        }
+
+        .info-box.success {
+            border-left-color: var(--success);
+            background: #d1fae5;
+        }
+
+        .endpoint {
+            background: white;
+            border: 1px solid var(--gray-200);
+            border-radius: 8px;
+            margin: 2rem 0;
+            overflow: hidden;
+        }
+
+        .endpoint-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.25rem 1.5rem;
+            background: var(--gray-50);
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .method-badge {
+            padding: 0.375rem 0.875rem;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.875rem;
+            letter-spacing: 0.025em;
+        }
+
+        .method-get {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .method-post {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .endpoint-path {
+            font-family: 'Fira Code', monospace;
+            font-size: 1rem;
+            color: var(--gray-700);
+            font-weight: 500;
+        }
+
+        .endpoint-body {
+            padding: 1.5rem;
+        }
+
+        .param-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+
+        .param-table th {
+            background: var(--gray-100);
+            padding: 0.75rem 1rem;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.875rem;
+            color: var(--gray-700);
+            border-bottom: 2px solid var(--gray-200);
+        }
+
+        .param-table td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--gray-200);
+            font-size: 0.9375rem;
+        }
+
+        .param-name {
+            font-family: 'Fira Code', monospace;
+            font-weight: 500;
+            color: var(--primary);
+        }
+
+        .param-required {
+            color: var(--danger);
+            font-weight: 600;
+            font-size: 0.75rem;
+        }
+
+        .param-optional {
+            color: var(--gray-700);
+            font-size: 0.75rem;
+        }
+
+        .code-block {
+            background: var(--gray-900);
+            color: #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            position: relative;
+            margin: 1rem 0;
+        }
+
+        .code-block pre {
+            margin: 0;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.875rem;
+            line-height: 1.6;
+        }
+
+        .copy-button {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            transition: all 0.2s;
+        }
+
+        .copy-button:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .copy-button.copied {
+            background: var(--success);
+            border-color: var(--success);
+        }
+
+        .json {
+            color: #e2e8f0;
+        }
+        .json-key {
+            color: #7dd3fc;
+        }
+        .json-string {
+            color: #86efac;
+        }
+        .json-number {
+            color: #fbbf24;
+        }
+        .json-boolean {
+            color: #f472b6;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            border-bottom: 2px solid var(--gray-200);
+            margin-bottom: 1rem;
+        }
+
+        .tab {
+            padding: 0.75rem 1.25rem;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            color: var(--gray-700);
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px;
+            transition: all 0.2s;
+        }
+
+        .tab:hover {
+            color: var(--primary);
+        }
+
+        .tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @media (max-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                position: static;
+            }
+        }
+
+        .url-builder {
+            background: var(--gray-50);
+            border: 1px solid var(--gray-200);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .url-input-group {
+            margin-bottom: 1rem;
+        }
+
+        .url-input-group label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+            color: var(--gray-700);
+        }
+
+        .url-input-group input {
+            width: 100%;
+            padding: 0.625rem 0.875rem;
+            border: 1px solid var(--gray-300);
+            border-radius: 6px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.875rem;
+        }
+
+        .generated-url {
+            background: var(--gray-900);
+            color: white;
+            padding: 1rem;
+            border-radius: 6px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.875rem;
+            word-break: break-all;
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="container">
+            <h1>Quendoo PMS API v1</h1>
+            <p class="subtitle">Complete API Documentation for Property Management System Integration</p>
+            <span class="version-badge">Last Updated: 06.11.2025</span>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <nav class="sidebar">
+            <h3>Navigation</h3>
+            <a href="#overview" class="nav-link active">Overview</a>
+            <a href="#authentication" class="nav-link">Authentication</a>
+            <a href="#response-structure" class="nav-link">Response Structure</a>
+            <a href="#property-settings" class="nav-link">Property Settings</a>
+            <a href="#rooms-details" class="nav-link">Rooms Details</a>
+            <a href="#external-property" class="nav-link">External Property Data</a>
+            <a href="#availability-get" class="nav-link">Get Availability</a>
+            <a href="#availability-update" class="nav-link">Update Availability</a>
+            <a href="#bookings-get" class="nav-link">Get Bookings</a>
+            <a href="#bookings-ack" class="nav-link">Acknowledge Booking</a>
+            <a href="#room-assignment" class="nav-link">Room Assignment</a>
+            <a href="#booking-offers" class="nav-link">Booking Offers</a>
+        </nav>
+
+        <main class="content">
+            <!-- Overview Section -->
+            <section id="overview" class="section">
+                <h2>Overview</h2>
+                <p>The Quendoo PMS API v1 provides a comprehensive interface for integrating with the Quendoo Property Management System. This RESTful API allows you to manage properties, availability, bookings, and more.</p>
+                
+                <div class="info-box">
+                    <strong>Base URLs:</strong><br>
+                    <strong>DEBUG:</strong> <code>https://quendoo-platform.itti.bg/api/pms/v1/</code><br>
+                    <strong>PRODUCTION:</strong> <code>https://www.platform.quendoo.com/api/pms/v1/</code>
+                </div>
+            </section>
+
+            <!-- Authentication Section -->
+            <section id="authentication" class="section">
+                <h2>Authentication</h2>
+                <p>All API requests require authentication using an API key passed as a GET parameter.</p>
+                
+                <h4>Required Parameters</h4>
+                <table class="param-table">
+                    <thead>
+                        <tr>
+                            <th>Parameter</th>
+                            <th>Type</th>
+                            <th>Required</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="param-name">api_key</span></td>
+                            <td>string</td>
+                            <td><span class="param-required">Required</span></td>
+                            <td>Your API authentication key</td>
+                        </tr>
+                        <tr>
+                            <td><span class="param-name">api_lng</span></td>
+                            <td>string</td>
+                            <td><span class="param-optional">Optional</span></td>
+                            <td>Language code: en-GB, bg-BG, el-GR, de-DE, ro-RO, ru-RU</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h4>Example Request</h4>
+                <div class="code-block">
+                    <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                    <pre>GET https://www.platform.quendoo.com/api/pms/v1/Property/getPropertySettings?api_key=your-api-key&api_lng=bg-BG</pre>
+                </div>
+            </section>
+
+            <!-- Response Structure Section -->
+            <section id="response-structure" class="section">
+                <h2>Response Structure</h2>
+                <p>All API responses return a JSON object with up to three possible keys: <code>data</code>, <code>error</code>, and <code>meta</code>.</p>
+
+                <div class="tabs">
+                    <button class="tab active" onclick="switchTab(event, 'success-response')">Success Response</button>
+                    <button class="tab" onclick="switchTab(event, 'error-response')">Error Response</button>
+                    <button class="tab" onclick="switchTab(event, 'meta-response')">Meta Response</button>
+                </div>
+
+                <div id="success-response" class="tab-content active">
+                    <div class="code-block">
+                        <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                        <pre class="json">{
+  <span class="json-key">"data"</span>: {
+    <span class="json-key">"rooms"</span>: [
+      {
+        <span class="json-key">"id"</span>: <span class="json-number">1</span>,
+        <span class="json-key">"name"</span>: <span class="json-string">"Double Room"</span>
+      }
+    ]
+  }
+}</pre>
+                    </div>
+                </div>
+
+                <div id="error-response" class="tab-content">
+                    <div class="code-block">
+                        <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                        <pre class="json">{
+  <span class="json-key">"error"</span>: {
+    <span class="json-key">"code"</span>: <span class="json-number">400</span>,
+    <span class="json-key">"message"</span>: <span class="json-string">"Bad Request"</span>,
+    <span class="json-key">"details"</span>: <span class="json-string">"Not found property room_id"</span>
+  }
+}</pre>
+                    </div>
+                </div>
+
+                <div id="meta-response" class="tab-content">
+                    <div class="code-block">
+                        <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                        <pre class="json">{
+  <span class="json-key">"meta"</span>: {
+    <span class="json-key">"message"</span>: <span class="json-string">"Success"</span>
+  }
+}</pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Property Settings Endpoint -->
+            <section id="property-settings" class="section">
+                <h2>Property Settings</h2>
+                <p>Retrieve property data including rooms, rate plans, extra services, payment methods, meal types, beds, booking modules, and channel codes.</p>
+
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method-badge method-get">GET</span>
+                        <span class="endpoint-path">Property/getPropertySettings</span>
+                    </div>
+                    <div class="endpoint-body">
+                        <h4>Parameters</h4>
+                        <table class="param-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Required</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><span class="param-name">names</span></td>
+                                    <td>string</td>
+                                    <td><span class="param-optional">Optional</span></td>
+                                    <td>Comma-separated list to filter results (e.g., "rooms,rates")</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <h4>Example Request</h4>
+                        <div class="code-block">
+                            <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                            <pre>GET /Property/getPropertySettings?api_key=your-api-key&names=rooms,rates</pre>
+                        </div>
+
+                        <h4>Response Example</h4>
+                        <div class="code-block">
+                            <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                            <pre class="json">{
+  <span class="json-key">"data"</span>: {
+    <span class="json-key">"rooms"</span>: [
+      {
+        <span class="json-key">"id"</span>: <span class="json-number">2666</span>,
+        <span class="json-key">"name"</span>: <span class="json-string">"Single Room"</span>
+      },
+      {
+        <span class="json-key">"id"</span>: <span class="json-number">2667</span>,
+        <span class="json-key">"name"</span>: <span class="json-string">"Double Room"</span>
+      }
+    ],
+    <span class="json-key">"rates"</span>: [
+      {
+        <span class="json-key">"id"</span>: <span class="json-number">3685</span>,
+        <span class="json-key">"name"</span>: <span class="json-string">"Standard Rate"</span>
+      }
+    ]
+  }
+}</pre>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Rooms Details Endpoint -->
+            <section id="rooms-details" class="section">
+                <h2>Rooms Details</h2>
+                <p>Get detailed information about rooms in the property.</p>
+
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method-badge method-get">GET</span>
+                        <span class="endpoint-path">Property/getRoomsDetails</span>
+                    </div>
+                    <div class="endpoint-body">
+                        <h4>Parameters</h4>
+                        <table class="param-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Required</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><span class="param-name">room_id</span></td>
+                                    <td>integer</td>
+                                    <td><span class="param-optional">Optional</span></td>
+                                    <td>Specific room ID to get details for</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <h4>Example Request</h4>
+                        <div class="code-block">
+                            <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                            <pre>GET /Property/getRoomsDetails?api_key=your-api-key&room_id=2667</pre>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- External Property Data Endpoint -->
+            <section id="external-property" class="section">
+                <h2>External Property Data</h2>
+                <p>Submit property data from an external system to Quendoo for mapping purposes.</p>
+
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method-badge method-post">POST</span>
+                        <span class="endpoint-path">Property/postExternalPropertyData</span>
+                    </div>
+                    <div class="endpoint-body">
+                        <div class="info-box warning">
+                            <strong>Note:</strong> You must provide an <code>id</code> and <code>name</code> for the property, plus at least one structure: rooms_types, rates_types, services_types, meals_types, or beds_types.
+                        </div>
+
+                        <h4>Request Body Example</h4>
+                        <div class="code-block">
+                            <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                            <pre class="json">{
+  <span class="json-key">"property"</span>: {
+    <span class="json-key">"id"</span>: <span class="json-string">"p1"</span>,
+    <span class="json-key">"name"</span>: <span class="json-string">"Hotel Enterprise"</span>,
+    <span class="json-key">"mapping_data"</span>: {
+      <span class="json-key">"rooms_types"</span>: [
+        {
+          <span class="json-key">"id"</span>: <span class="json-string">"r1"</span>,
+          <span class="json-key">"name"</span>: <span class="json-string">"Double Room"</span>
+        }
+      ],
+      <span class="json-key">"rates_types"</span>: [
+        {
+          <span class="json-key">"id"</span>: <span class="json-string">"rp1"</span>,
+          <span class="json-key">"name"</span>: <span class="json-string">"Early Bird"</span>
+        }
+      ]
+    }
+  }
+}</pre>
+                        </div>
+
+                        <h4>Success Response</h4>
+                        <div class="code-block">
+                            <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                            <pre class="json">{
+  <span class="json-key">"meta"</span>: {
+    <span class="json-key">"message"</span>: <span class="json-string">"Success"</span>
+  }
+}</pre>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Get Availability Endpoint -->
+            <section id="availability-get" class="section">
+                <h2>Get Availability</h2>
+                <p>Retrieve available room quantities for a date range. Quendoo works at the room type level, not individual physical rooms.</p>
+
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method-badge method-get">GET</span>
+                        <span class="endpoint-path">Availability/getAvailability</span>
+                    </div>
+                    <div class="endpoint-body">
+                        <h4>Parameters</h4>
+                        <table class="param-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Required</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><span class="param-name">date_from</span></td>
+                                    <td>date</td>
+                                    <td><span class="param-required">Required</span></td>
+                                    <td>Start date (YYYY-MM-DD)</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="param-name">date_to</span></td>
+                                    <td>date</td>
+                                    <td><span class="param-required">Required</span></td>
+                                    <td>End date (YYYY-MM-DD)</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="param-name">sysres</span></td>
+                                    <td>string</td>
+                                    <td><span class="param-required">Required</span></td>
+                                    <td>System identifier: "qdo" (Quendoo IDs) or "ext" (External IDs)</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="param-name">room_id</span></td>
+                                    <td>integer</td>
+                                    <td><span class="param-optional">Optional</span></td>
+                                    <td>Specific Quendoo room ID</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="param-name">ext_room_id</span></td>
+                                    <td>string</td>
+                                    <td><span class="param-optional">Optional</span></td>
+                                    <td>Specific external room ID</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <h4>Example Request</h4>
+                        <div class="code-block">
+                            <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                            <pre>GET /Availability/getAvailability?api_key=your-api-key&date_from=2026-01-15&date_to=2026-01-20&sysres=qdo</pre>
+                        </div>
+
+                        <h4>Response Example</h4>
+                        <div class="code-block">
+                            <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                            <pre class="json">{
+  <span class="json-key">"data"</span>: {
+    <span class="json-key">"2667"</span>: {
+      <span class="json-key">"2026-01-15"</span>: <span class="json-number">43</span>,
+      <span class="json-key">"2026-01-16"</span>: <span class="json-number">41</span>,
+      <span class="json-key">"2026-01-17"</span>: <span class="json-number">40</span>
+    }
+  }
+}</pre>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Update Availability Endpoint -->
+            <section id="availability-update" class="section">
+                <h2>Update Availability</h2>
+                <p>Modify available room quantities for specific dates.</p>
+
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method-badge method-post">POST</span>
+                        <span class="endpoint-path">Availability/updateAvailability</span>
+                    </div>
+                    <div class="endpoint-body">
+                        <h4>Request Body Example</h4>
+                        <div class="code-block">
+                            <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                            <pre class="json">{
+  <span class="json-key">"values"</span>: [
+    {
+      <span class="json-key">"room_id"</span>: <span class="json-number">2667</span>,
+      <span class="json-key">"date"</span>: <span class="json-string">"2026-01-15"</span>,
+      <span class="json-key">"qty"</span>: <span class="json-number">40</span>
+    },
+    {
+      <span class="json-key">"room_id"</span>: <span class="json-number">2667</span>,
+      <span class="json-key">"date_from"</span>: <span class="json-string">"2026-01-20"</span>,
+      <span class="json-key">"date_to"</span>: <span class="json-string">"2026-01-25"</span>,
+      <span class="json-key">"qty"</span>: <span class="json-number">35</span>,
+      <span class="json-key">"opened"</span>: <span class="json-boolean">true</span>
+    },
+    {
+      <span class="json-key">"ext_room_id"</span>: <span class="json-string">"ext-123"</span>,
+      <span class="json-key">"date"</span>: <span class="json-string">"2026-01-18"</span>,
+      <span class="json-key">"closed"</span>: <span class="json-boolean">true</span>
+    }
+  ]
+}</pre>
+                        </div>
+
+                        <div class="info-box">
+                            <strong>Parameter Options:</strong>
+                            <ul style="margin: 0.5rem 0 0 1.5rem;">
+                                <li><code>qty</code>: Set available quantity</li>
+                                <li><code>closed</code>: Close room (true/false)</li>
+                                <li><code>opened</code>: Open room (true/false)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Get Bookings Endpoint -->
+            <section id="bookings-get" class="section">
+                <h2>Get Bookings</h2>
+                <p>Retrieve list of unconfirmed new or modified bookings with check-in dates greater than or equal to today.</p>
+
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method-badge method-get">GET</span>
+                        <span class="endpoint-path">Booking/getBookings</span>
+                    </div>
+                    <div class="endpoint-body">
+                        <h4>Parameters</h4>
+                        <table class="param-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Required</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><span class="param-name">type</span></td>
+                                    <td>string</td>
+                                    <td><span class="param-optional">Optional</span></td>
+                                    <td>"new" for new bookings only, "modified" for modified bookings only</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div class="info-box warning">
+                            <strong>Important:</strong> Each booking must be acknowledged using <code>Booking/ackBooking</code> with its <code>revision_id</code>, or it will continue to be sent.
+                        </div>
+
+                        <h4>Booking Status Values</h4>
+                        <ul style="margin: 1rem 0 1rem 1.5rem;">
+                            <li><strong>status:</strong> REQUESTED, CREATED, APPROVED, CHECKIN, CHECKOUT, CANCELLED</li>
+                            <li><strong>payment_status:</strong> WAITING, FAILED, DEPOSIT_PAID, PARTIALLY_PAID, FULLY_PAID, REFUNDED</li>
+                        </ul>
+
+                        <h4>Example Request</h4>
+                        <div class="code-block">
+                            <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                            <pre>GET /Booking/getBookings?api_key=your-api-key&type=new</pre>
+                        </div>
+
+                        <h4>Response Example (Abbreviated)</h4>
+                        <div class="code-block">
+                            <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                            <pre class="json">{
+  <span class="json-key">"data"</span>: [
+    {
+      <span class="json-key">"revision_id"</span>: <span class="json-string">"fa01cc5f58b3dddea6293a286b860fe4"</span>,
+      <span class="json-key">"revision_number"</span>: <span class="json-string">"1"</span>,
+      <span class="json-key">"booking_id"</span>: <span class="json-number">412687</span>,
+      <span class="json-key">"booking_status"</span>: <span class="json-string">"new"</span>,
+      <span class="json-key">"property_id"</span>: <span class="json-string">"866"</span>,
+      <span class="json-key">"status"</span>: <span class="json-string">"CREATED"</span>,
+      <span class="json-key">"payment_status"</span>: <span class="json-string">"WAITING"</span>,
+      <span class="json-key">"checkin_date"</span>: <span class="json-string">"2026-01-24"</span>,
+      <span class="json-key">"checkout_date"</span>: <span class="json-string">"2026-01-27"</span>,
+      <span class="json-key">"total_amount"</span>: <span class="json-number">750</span>,
+      <span class="json-key">"currency"</span>: <span class="json-string">"BGN"</span>,
+      <span class="json-key">"client"</span>: {
+        <span class="json-key">"name"</span>: <span class="json-string">"Goryan Varbanov"</span>,
+        <span class="json-key">"email"</span>: <span class="json-string">"gorian@quendoo.com"</span>,
+        <span class="json-key">"phone"</span>: <span class="json-string">"+359885121251"</span>
+      }
+    }
+  ]
+}</pre>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Acknowledge Booking Endpoint -->
+            <section id="bookings-ack" class="section">
+                <h2>Acknowledge Booking</h2>
+                <p>Confirm receipt of a booking to prevent it from being sent again.</p>
+
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method-badge method-post">POST</span>
+                        <span class="endpoint-path">Booking/ackBooking</span>
+                    </div>
+                    <div class="endpoint-body">
+                        <h4>Request Body Example</h4>
+                        <div class="code-block">
+                            <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                            <pre class="json">{
+  <span class="json-key">"booking_id"</span>: <span class="json-number">412687</span>,
+  <span class="json-key">"revision_id"</span>: <span class="json-string">"fa01cc5f58b3dddea6293a286b860fe4"</span>,
+  <span class="json-key">"booking_items"</span>: [
+    {
+      <span class="json-key">"booking_item_id"</span>: <span class="json-number">492319</span>,
+      <span class="json-key">"ext_reservation_id"</span>: <span class="json-string">"EXT-12345"</span>,
+      <span class="json-key">"self_chekin_code"</span>: <span class="json-string">"ABCD1234"</span>,
+      <span class="json-key">"room_number"</span>: <span class="json-string">"301"</span>
+    }
+  ]
+}</pre>
+                        </div>
+
+                        <div class="info-box success">
+                            The <code>booking_items</code> array is optional but allows you to provide external reservation IDs, self check-in codes, and room numbers.
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Room Assignment Endpoint -->
+            <section id="room-assignment" class="section">
+                <h2>Room Assignment</h2>
+                <p>Assign room numbers and self check-in codes to booked items.</p>
+
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method-badge method-post">POST</span>
+                        <span class="endpoint-path">Booking/postRoomAssignment</span>
+                    </div>
+                    <div class="endpoint-body">
+                        <h4>Request Body Example</h4>
+                        <div class="code-block">
+                            <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                            <pre class="json">{
+  <span class="json-key">"booking_id"</span>: <span class="json-number">412687</span>,
+  <span class="json-key">"revision_id"</span>: <span class="json-string">"fa01cc5f58b3dddea6293a286b860fe4"</span>,
+  <span class="json-key">"booking_items"</span>: [
+    {
+      <span class="json-key">"booking_item_id"</span>: <span class="json-number">492319</span>,
+      <span class="json-key">"ext_reservation_id"</span>: <span class="json-string">"EXT-12345"</span>,
+      <span class="json-key">"self_chekin_code"</span>: <span class="json-string">"EFGH5678"</span>,
+      <span class="json-key">"room_number"</span>: <span class="json-string">"205"</span>
+    }
+  ]
+}</pre>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Booking Offers Endpoint -->
+            <section id="booking-offers" class="section">
+                <h2>Booking Offers</h2>
+                <p>Retrieve booking offers based on search criteria including dates, guests, and booking module.</p>
+
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method-badge method-get">GET</span>
+                        <span class="endpoint-path">Property/getBookingOffers</span>
+                    </div>
+                    <div class="endpoint-body">
+                        <h4>Parameters</h4>
+                        <table class="param-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Required</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><span class="param-name">bm_code</span></td>
+                                    <td>string</td>
+                                    <td><span class="param-required">Required</span></td>
+                                    <td>Active booking module code</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="param-name">date_from</span></td>
+                                    <td>date</td>
+                                    <td><span class="param-required">Required</span></td>
+                                    <td>Check-in date (YYYY-MM-DD)</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="param-name">nights</span></td>
+                                    <td>integer</td>
+                                    <td><span class="param-required">Required</span></td>
+                                    <td>Number of nights</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="param-name">guests</span></td>
+                                    <td>array</td>
+                                    <td><span class="param-required">Required</span></td>
+                                    <td>Guest configuration per room</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="param-name">currency</span></td>
+                                    <td>string</td>
+                                    <td><span class="param-optional">Optional</span></td>
+                                    <td>BGN, EUR, USD, GBP, RUB</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="param-name">promo_code</span></td>
+                                    <td>string</td>
+                                    <td><span class="param-optional">Optional</span></td>
+                                    <td>Promotional discount code</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <h4>Guest Parameter Format</h4>
+                        <div class="code-block">
+                            <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                            <pre>guests[0][adults]=2&guests[0][children_by_ages][0]=5&guests[0][children_by_ages][1]=8</pre>
+                        </div>
+
+                        <h4>Example Request</h4>
+                        <div class="code-block">
+                            <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                            <pre>GET /Property/getBookingOffers?api_key=your-api-key&bm_code=neXu98qdmw&date_from=2026-01-15&nights=3&guests[0][adults]=2&currency=BGN</pre>
+                        </div>
+
+                        <h4>Response Example</h4>
+                        <div class="code-block">
+                            <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                            <pre class="json">{
+  <span class="json-key">"data"</span>: [
+    {
+      <span class="json-key">"per_room"</span>: <span class="json-boolean">false</span>,
+      <span class="json-key">"sell_type"</span>: <span class="json-string">"per_occupancy"</span>,
+      <span class="json-key">"room_id"</span>: <span class="json-number">2667</span>,
+      <span class="json-key">"room_name"</span>: <span class="json-string">"Double room"</span>,
+      <span class="json-key">"rate_id"</span>: <span class="json-number">8444</span>,
+      <span class="json-key">"rate_name"</span>: <span class="json-string">"Early bird"</span>,
+      <span class="json-key">"price"</span>: <span class="json-number">675</span>,
+      <span class="json-key">"currency"</span>: <span class="json-string">"BGN"</span>,
+      <span class="json-key">"accommodation_name"</span>: <span class="json-string">"2 adult on regular bed"</span>
+    }
+  ]
+}</pre>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <script>
+        function copyCode(button) {
+            const codeBlock = button.nextElementSibling;
+            const code = codeBlock.textContent;
+            
+            navigator.clipboard.writeText(code).then(() => {
+                button.textContent = 'Copied!';
+                button.classList.add('copied');
+                
+                setTimeout(() => {
+                    button.textContent = 'Copy';
+                    button.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        function switchTab(event, tabId) {
+            const tabButtons = event.target.parentElement.querySelectorAll('.tab');
+            const tabContents = event.target.parentElement.parentElement.querySelectorAll('.tab-content');
+            
+            tabButtons.forEach(btn => btn.classList.remove('active'));
+            tabContents.forEach(content => content.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(tabId).classList.add('active');
+        }
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Update active state
+                document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Scroll to section
+                const targetId = this.getAttribute('href').substring(1);
+                const targetSection = document.getElementById(targetId);
+                targetSection.scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+
+        // Update active nav link on scroll
+        window.addEventListener('scroll', () => {
+            const sections = document.querySelectorAll('.section');
+            const navLinks = document.querySelectorAll('.nav-link');
+            
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (scrollY >= sectionTop - 100) {
+                    current = section.getAttribute('id');
+                }
+            });
+            
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href').substring(1) === current) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
